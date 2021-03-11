@@ -3,7 +3,9 @@ import os
 import shutil
 from random import randrange
 
-
+__maintainer__ = "Yassine Abdelouahed <yassine.abdelouahed@gmail.com>"
+__date__ = '18.08.2020'
+__revision__ = 'version 1'
 
 def normalize_filename(fn):
     valid_chars = "-_.()"
@@ -107,49 +109,50 @@ def find_and_extract(dest_folder,notebook_name,notebook_id):
             continue
         copy_files(folder_path, notebook_path, note_titel, note_id)
 
-# Directory
-directory = "Evernote"
-# the source path
-source_path = input("Please enter the source/package path of the evernote: ")
-# database path
-DATABASE_PATH = input("Please enter the database path(/com.evenote/databases/user...): ")
-# Parent Directory path
-parent_dir = input("Please enter where you want to save the results: ")
+if __name__ == '__main__':
+    # Directory
+    directory = "Evernote"
+    # the source path
+    source_path = input("Please enter the source/package path of the evernote: ")
+    # database path
+    DATABASE_PATH = input("Please enter the database path(/com.evenote/databases/user...): ")
+    # Parent Directory path
+    parent_dir = input("Please enter where you want to save the results: ")
 
-# Create Results folder
-create_folder(parent_dir, directory)
-path = os.path.join(parent_dir, directory)
+    # Create Results folder
+    create_folder(parent_dir, directory)
+    path = os.path.join(parent_dir, directory)
 
-# Read the notebook database
-results = read_db("notebooks")
+    # Read the notebook database
+    results = read_db("notebooks")
 
-# help variables
-current_stack = ""
-def_path = path
-current_path = path
+    # help variables
+    current_stack = ""
+    def_path = path
+    current_path = path
 
-print("Starting the extraction")
-# x steht für derzeitige Notebook von der Liste results
-for x in results:
-    notebook_name = x[1]
-    notebook_id = x[0]
-    notebook_parent = x[2]
+    print("Starting the extraction")
+    # x steht für derzeitige Notebook von der Liste results
+    for x in results:
+        notebook_name = x[1]
+        notebook_id = x[0]
+        notebook_parent = x[2]
 
-    # incase a notebook "x[2]" did't belong to a certain stack
-    if notebook_parent is None:
-        find_and_extract(def_path, notebook_name, notebook_id)
-        continue
+        # incase a notebook "x[2]" did't belong to a certain stack
+        if notebook_parent is None:
+            find_and_extract(def_path, notebook_name, notebook_id)
+            continue
 
-    # organise the stack
-    if notebook_parent != current_stack:
-        current_stack = normalize_filename(notebook_parent)
-        # set the current path to the stack folder path
-        current_path = os.path.join(def_path, current_stack)
-        # create stack folder
-        create_folder(def_path, current_stack)
+        # organise the stack
+        if notebook_parent != current_stack:
+            current_stack = normalize_filename(notebook_parent)
+            # set the current path to the stack folder path
+            current_path = os.path.join(def_path, current_stack)
+            # create stack folder
+            create_folder(def_path, current_stack)
 
-    find_and_extract(current_path, notebook_name, notebook_id)
+        find_and_extract(current_path, notebook_name, notebook_id)
 
 
 
-input("Done, Press Enter to continue...")
+    input("Done, Press Enter to continue...")
